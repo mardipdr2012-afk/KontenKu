@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KontenKu — Portal Kreator Indonesia</title>
+<meta name="description" content="Kelola ide, produksi, jadwal, dan performa konten dalam satu tempat.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="auth" hidden></div>
+<div id="app" hidden>
+  <aside class="side" id="side">
+    <div class="logo"><i class="bi bi-layout-text-window-reverse"></i><b>KontenKu</b><small>v1.0</small></div>
+    <nav>
+      <a data-p="dashboard" onclick="go('dashboard')"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+      <a data-p="ide" onclick="go('ide')"><i class="bi bi-lightbulb"></i><span>Ide Konten</span></a>
+      <a data-p="produksi" onclick="go('produksi')"><i class="bi bi-kanban"></i><span>Progres Produksi</span></a>
+      <a data-p="kalender" onclick="go('kalender')"><i class="bi bi-calendar3"></i><span>Kalender Konten</span></a>
+      <a data-p="analitik" onclick="go('analitik')"><i class="bi bi-bar-chart-line"></i><span>Analitik Konten</span></a>
+      <a data-p="pengaturan" onclick="go('pengaturan')"><i class="bi bi-gear"></i><span>Pengaturan</span></a>
+      <div class="sec" id="secA">SISTEM</div>
+      <a data-p="admin" id="navA" onclick="go('admin')"><i class="bi bi-shield-check"></i><span>Admin</span></a>
+    </nav>
+    <div class="quote"><i class="bi bi-trophy"></i><span>“Konsisten hari ini, hasil besar nanti”</span></div>
+    <a class="out" onclick="keluar()"><i class="bi bi-box-arrow-left"></i><span>Keluar</span></a>
+  </aside>
+  <div class="mn">
+    <header class="top">
+      <button class="btn btn-s burger" onclick="document.body.classList.toggle('nav')" aria-label="Menu"><i class="bi bi-list"></i></button>
+      <span class="eyebrow"><i class="dot"></i>PORTAL KREATOR INDONESIA</span>
+      <span class="sp"></span>
+      <button class="btn btn-p" onclick="window.print()"><i class="bi bi-download"></i> Unduh PDF</button>
+      <div class="usr"><span class="av" id="av">K</span><div><b id="nm">—</b><small>Kreator</small></div></div>
+    </header>
+    <main id="view"></main>
+  </div>
+  <div class="scrim" onclick="document.body.classList.remove('nav')"></div>
+</div>
+<div id="mdl" class="ov" hidden></div>
+<div id="net" hidden></div>
+<div id="toasts"></div>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
