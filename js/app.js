@@ -109,7 +109,7 @@ R.dashboard=()=>{
 /* ── Ide Konten ── */
 R.ide=()=>{
   const I=D.ide.filter(i=>i.status_ide!=='Diarsipkan'&&(!ip||String(i.platform_tujuan).includes(ip))&&(!iq||(i.judul+i.topik+i.hook).toLowerCase().includes(iq))).sort((a,b)=>String(b.dibuat_pada).localeCompare(a.dibuat_pada));
-  return head('Ide Konten','Simpan ide ke bank ide atau langsung jadikan draf produksi.',`<input placeholder="Cari ide…" value="${esc(iq)}" style="width:200px" onchange="iq=this.value.toLowerCase();draw()"><select style="width:auto" onchange="ip=this.value;draw()"><option value="">Semua platform</option>${pla().map(p=>`<option${p===ip?' selected':''}>${p}</option>`).join('')}</select><button class="btn btn-p" onclick="fIde()">+ Tambah Ide Baru</button>`)
+  return head('Ide Konten','Simpan ide ke bank ide atau langsung jadikan draf produksi.',`<input placeholder="Cari ide…" value="${esc(iq)}" style="width:200px" onchange="iq=this.value.toLowerCase();draw()"><select style="width:auto" onchange="ip=this.value;draw()"><option value="">Semua platform</option>${pla().map(p=>`<option${p===ip?' selected':''}>${p}</option>`).join('')}</select><button class="btn btn-s" onclick="fAiIde()"><i class="bi bi-stars"></i> Ide dengan AI</button><button class="btn btn-p" onclick="fIde()">+ Tambah Ide Baru</button>`)
   +(I.length?`<div class="ideg">${I.map(i=>`<div class="card ide"><div class="row"><span class="chip ${i.prioritas==='Tinggi'?'bd-r':i.prioritas==='Rendah'?'bd-g':'bd-y'}">${esc(i.prioritas||'Sedang')}</span><span class="chip bd-b">${esc(i.kategori||i.topik||'Umum')}</span>${i.status_ide==='Dipilih'?'<span class="chip bd-s">Dijadikan konten</span>':''}</div><h3>${esc(i.judul)}</h3>${i.hook?`<div class="hook">“${esc(i.hook)}”</div>`:''}<div class="row">${String(i.platform_tujuan||'').split(',').filter(Boolean).map(pc).join('')}</div><div class="row sb" style="margin-top:auto"><span><button class="ib" title="Ubah" onclick="fIde('${i.ide_id}')"><i class="bi bi-pencil"></i></button><button class="ib" title="Arsipkan" onclick="sv([{t:'Ide',o:{ide_id:'${i.ide_id}',status_ide:'Diarsipkan'}}]);toast('Ide diarsipkan')"><i class="bi bi-archive"></i></button><button class="ib" title="Hapus" onclick="confirm('Hapus ide ini?')&&hp('Ide','${i.ide_id}')"><i class="bi bi-trash"></i></button></span>${i.status_ide==='Dipilih'?'':`<button class="btn btn-s btn-sm" onclick="jadikan('${i.ide_id}')">Jadikan Konten →</button>`}</div></div>`).join('')}</div>`
   :`<div class="card empty"><i class="bi bi-lightbulb"></i><h3>Belum ada ide</h3><p>Yuk tambah ide pertama!</p><button class="btn btn-p" onclick="fIde()">+ Tambah Ide Baru</button></div>`);
 };
@@ -118,7 +118,7 @@ function fIde(id){
   mdl(`<h2>${id?'Ubah Ide':'Tambah Ide Baru'}</h2><p>Simpan ide ke bank ide atau langsung jadikan draf produksi.</p><form onsubmit="return svIde(event,'${id||''}')" style="margin-top:14px">
   ${fld('Judul Ide *',`<input name="judul" required maxlength="120" value="${esc(i.judul)}">`)}
   <div class="g2">${fld('Topik / Pilar',`<input name="topik" maxlength="80" value="${esc(i.topik)}">`)}${fld('Kategori',sel('kategori',cat(),i.kategori,1))}</div>
-  ${fld('Hook Pembuka (3 detik pertama)',`<textarea name="hook" rows="2" maxlength="300">${esc(i.hook)}</textarea>`)}
+  ${fld('Hook Pembuka (3 detik pertama)',`<textarea name="hook" rows="2" maxlength="300">${esc(i.hook)}</textarea><button type="button" class="btn btn-s btn-sm" onclick="aiHook(this)"><i class="bi bi-stars"></i> Perbaiki hook dengan AI</button>`)}
   ${fld('Konsep Video',`<textarea name="konsep_video" rows="2" maxlength="600">${esc(i.konsep_video)}</textarea>`)}
   <div class="f">Platform Tujuan</div><div class="seg" style="margin-bottom:14px">${[...new Set([...pla(),'Lainnya'])].map(p=>`<label><input type="checkbox" name="pt" value="${esc(p)}"${pt.includes(p)?' checked':''}>${esc(p)}</label>`).join('')}</div>
   <div class="f">Tingkat Prioritas</div><div class="seg" style="margin-bottom:18px">${['Tinggi','Sedang','Rendah'].map(p=>`<label><input type="radio" name="prioritas" value="${p}"${i.prioritas===p?' checked':''}>${p}</label>`).join('')}</div>
@@ -151,7 +151,7 @@ function fKonten(id,pre){
   ${fld('Judul Konten *',`<input name="judul" required maxlength="100" value="${esc(k.judul)}">`)}
   <div class="g2">${fld('Platform',sel('platform',pla(),k.platform))}${fld('Kategori',sel('kategori',cat(),k.kategori,1))}${fld('Tahap',sel('tahap',TH,k.tahap))}${fld('Status',sel('status',ST,k.status))}${dt('tgl_mulai','Tanggal Mulai')}${dt('deadline','Deadline')}${dt('tgl_tayang','Rencana Tayang')}${dt('jam_tayang','Jam Tayang (WIB)','time')}</div>
   ${fld('Tautan Publikasi (URL)',`<input name="link_konten" type="url" placeholder="https://" value="${esc(k.link_konten)}">`)}
-  ${fld('Catatan / Naskah',`<textarea name="catatan" rows="4" maxlength="1800">${esc(k.catatan)}</textarea>`)}
+  ${fld('Catatan / Naskah',`<textarea name="catatan" rows="4" maxlength="2000">${esc(k.catatan)}</textarea>`)}<div class="row" style="margin:-4px 0 14px"><button type="button" class="btn btn-s btn-sm" onclick="aiTulis('naskah',this)"><i class="bi bi-stars"></i> Buat Naskah</button><button type="button" class="btn btn-s btn-sm" onclick="aiTulis('caption',this)"><i class="bi bi-stars"></i> Caption & Hashtag</button></div>
   <div class="ft">${id?`<button type="button" class="btn btn-d" onclick="confirm('Hapus konten beserta data analitiknya?')&&(hp('Konten','${id}'),tutup())">Hapus</button>`:''}<button type="button" class="btn btn-s" onclick="tutup()">Batal</button><button class="btn btn-p">Simpan</button></div></form>`);
 }
 function svK(e,id){
@@ -176,7 +176,7 @@ R.analitik=()=>{
   const since=pa==='semua'?'':ago(Number(pa)),A=D.analitik.filter(a=>!since||a.tgl_catat>=since),L=lat(A);
   const rows=Object.values(L).map(a=>({a,k:D.konten.find(k=>k.konten_id===a.konten_id)})).filter(r=>r.k&&(!qa||(r.k.judul+r.k.platform+r.k.kategori).toLowerCase().includes(qa))).sort((x,y)=>num(y.a.views)-num(x.a.views));
   const sum=f=>rows.reduce((s,r)=>s+f(r.a),0),V=sum(a=>num(a.views)),I=sum(inter);
-  const h=head('Analitik Konten','Evaluasi performa engagement, pertumbuhan jangkauan, dan konversi multi-platform.',`<select aria-label="Periode" style="width:auto" onchange="pa=this.value;draw()">${[['7','7 hari'],['30','30 hari'],['90','90 hari'],['semua','Semua']].map(x=>`<option value="${x[0]}"${pa===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select><button class="btn btn-p" onclick="fCatat()">+ Catat Performa</button>`);
+  const h=head('Analitik Konten','Evaluasi performa engagement, pertumbuhan jangkauan, dan konversi multi-platform.',`<select aria-label="Periode" style="width:auto" onchange="pa=this.value;draw()">${[['7','7 hari'],['30','30 hari'],['90','90 hari'],['semua','Semua']].map(x=>`<option value="${x[0]}"${pa===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select><button class="btn btn-s" onclick="fInsight(this)"><i class="bi bi-stars"></i> Insight AI</button><button class="btn btn-p" onclick="fCatat()">+ Catat Performa</button>`);
   if(!rows.length&&!qa)return h+`<div class="card empty"><i class="bi bi-bar-chart-line"></i><h3>Belum ada data performa</h3><p>Tandai konten sebagai “Sudah Tayang”, lalu catat views, likes, dan lainnya.</p><button class="btn btn-p" onclick="fCatat()">+ Catat Performa</button></div>`;
   const wk={};A.forEach(a=>{const w=ws(a.tgl_catat);wk[w]=wk[w]||[0,0];wk[w][0]+=num(a.views);wk[w][1]+=inter(a)});const wl=Object.keys(wk).sort().slice(-8);
   const pv={},cv={};rows.forEach(r=>{pv[r.k.platform]=(pv[r.k.platform]||0)+num(r.a.views);const c=r.k.kategori||'Lainnya';cv[c]=(cv[c]||0)+num(r.a.views)});
@@ -223,6 +223,36 @@ R.admin=()=>{
 };
 function admSt(id,st){const u=AD.u.find(x=>x.user_id===id);if(u)u.status=st;draw();rpc('adminUbahStatusUser',T,id,st).catch(x=>{toast(x,1);loadAdmin()})}
 function admDel(id){if(!confirm('Hapus akun beserta seluruh datanya? Tindakan ini permanen.'))return;AD.u=AD.u.filter(x=>x.user_id!==id);draw();rpc('adminHapusUser',T,id).then(()=>toast('Pengguna dihapus')).catch(x=>{toast(x,1);loadAdmin()})}
+
+/* ── Gemini AI: otomatis (API key di server) atau manual (salin prompt → gemini.google.com → tempel hasil) ── */
+let AIR=[],MH=null;
+function ai(jenis,a,btn,onHasil,mdlTarget){
+  const t=btn&&btn.innerHTML;if(btn){btn.disabled=true;btn.innerHTML='<i class="bi bi-stars"></i> Memproses…'}
+  return rpc('tanyaAI',T,jenis,a).then(r=>{if(r.mode==='manual')aiManual(jenis,r.prompt,onHasil,r.info);else onHasil(r.hasil)})
+    .catch(x=>toast(typeof x==='string'?x:'Gagal memproses AI.',1)).finally(()=>{if(btn){btn.disabled=false;btn.innerHTML=t}});
+}
+const tutup2=()=>{$('#mdl2').hidden=true;$('#mdl2').innerHTML=''};
+$('#mdl2').onclick=e=>{if(e.target.id==='mdl2')tutup2()};
+function aiManual(jenis,prompt,onHasil,info){
+  const paste=jenis!=='insight';MH=onHasil;
+  $('#mdl2').innerHTML=`<div class="md" role="dialog" aria-modal="true"><h2>✨ Mode Manual — Gemini</h2>${info?`<p class="red">${esc(info)}</p>`:''}<p><small>Gunakan langganan Gemini Anda: (1) salin prompt, (2) tempel di Gemini, (3) ${paste?'salin jawabannya lalu tempel di kotak bawah, kemudian klik “Gunakan Hasil”.':'baca analisisnya langsung di Gemini.'}</small></p><textarea id="mp" rows="7" readonly style="margin:12px 0">${esc(prompt)}</textarea><button class="btn btn-p" onclick="salinBuka()"><i class="bi bi-clipboard"></i> Salin prompt & buka Gemini</button>${paste?'<label class="f" style="margin-top:16px">Tempel jawaban Gemini di sini<textarea id="mh" rows="6"></textarea></label>':''}<div class="ft"><button class="btn btn-s" onclick="tutup2()">Tutup</button>${paste?'<button class="btn btn-p" onclick="pakaiManual()">Gunakan Hasil</button>':''}</div></div>`;
+  $('#mdl2').hidden=false;
+}
+function salinBuka(){window.open('https://gemini.google.com/app','_blank','noopener');const v=$('#mp').value;
+  (navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast('Prompt disalin. Tempel di Gemini (Ctrl+V).')).catch(()=>{$('#mp').select();toast('Tekan Ctrl+C untuk menyalin prompt.',1)})}
+function pakaiManual(){const t=$('#mh').value.trim();if(!t)return toast('Tempel jawaban Gemini dulu.',1);try{MH(t);tutup2()}catch(x){toast(typeof x==='string'?x:'Format hasil tidak sesuai.',1)}}
+function parseIde(t){const i=t.indexOf('['),k=t.lastIndexOf(']'),bad='Format hasil tidak sesuai. Salin jawaban Gemini yang berisi daftar JSON.';if(i<0||k<i)throw bad;let r;try{r=JSON.parse(t.slice(i,k+1))}catch(e){throw bad}
+  if(!Array.isArray(r)||!r.length)throw bad;const c=(v,n)=>String(v==null?'':v).slice(0,n);return r.slice(0,5).map(x=>({judul:c(x.judul,120),topik:c(x.topik,80),hook:c(x.hook,300),konsep_video:c(x.konsep_video,600)}))}
+function aiHook(b){const f=b.closest('form');if(!f.judul.value.trim())return toast('Isi judul ide dulu.',1);const p=f.querySelector('[name=pt]:checked');
+  ai('hook',{judul:f.judul.value,kategori:f.kategori.value,platform:p?p.value:'',hook:f.hook.value},b,t=>{f.hook.value=t.trim().replace(/^["“]|["”]$/g,'').slice(0,300)})}
+function aiTulis(jn,b){const f=b.closest('form');if(!f.judul.value.trim())return toast('Isi judul konten dulu.',1);
+  ai(jn,{judul:f.judul.value,platform:f.platform.value,kategori:f.kategori.value,catatan:f.catatan.value},b,t=>{f.catatan.value=((f.catatan.value?f.catatan.value+'\n\n':'')+t.trim()).slice(0,2000);toast('Teks AI ditambahkan. Tinjau sebelum disimpan.')})}
+function fAiIde(){mdl(`<h2>✨ Ide Konten dengan AI</h2><p>Didukung Gemini. Hasilnya saran, tinjau dulu sebelum dipakai.</p><form onsubmit="return runAiIde(event)" style="margin-top:14px">${fld('Topik / niche',`<input name="topik" required maxlength="120" placeholder="mis. review gear untuk kreator pemula">`)}<div class="g2">${fld('Platform',sel('platform',pla()))}${fld('Jumlah ide',sel('jumlah',['3','5']))}</div><div class="ft"><button type="button" class="btn btn-s" onclick="tutup()">Tutup</button><button class="btn btn-p"><i class="bi bi-stars"></i> Buat Ide</button></div></form><div id="aiRes"></div>`)}
+function runAiIde(e){e.preventDefault();const f=e.target,o=FD(f);ai('ide',o,f.querySelector('.btn-p'),t=>showIde(parseIde(t),o.platform));return false}
+function showIde(r,pl){AIR=r.map(x=>Object.assign(x,{platform_tujuan:pl}));
+  $('#aiRes').innerHTML=AIR.map((x,i)=>`<div class="card ide" style="margin-top:12px;box-shadow:none"><h3>${esc(x.judul)}</h3><div class="hook">“${esc(x.hook)}”</div><small>${esc(x.konsep_video)}</small><button class="btn btn-s btn-sm" id="sa${i}" onclick="simpanAi(${i})">+ Simpan ke Bank Ide</button></div>`).join('')}
+function simpanAi(i){const x=AIR[i],b=$('#sa'+i);sv([{t:'Ide',o:{ide_id:uid(),judul:x.judul,topik:x.topik,hook:x.hook,konsep_video:x.konsep_video,platform_tujuan:x.platform_tujuan,prioritas:'Sedang',status_ide:'Baru',dibuat_pada:new Date().toISOString()}}]);b.disabled=true;b.textContent='Tersimpan ✓'}
+function fInsight(b){ai('insight',{},b,t=>mdl(`<h2>✨ Insight AI</h2><p><small>Analisis data performa Anda oleh Gemini. Gunakan sebagai masukan, bukan kepastian.</small></p><div style="white-space:pre-wrap;margin:14px 0">${esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')}</div><div class="ft"><button class="btn btn-p" onclick="tutup()">Tutup</button></div>`))}
 
 /* ── mulai ── */
 if(window.Chart)Chart.defaults.font.family="'Plus Jakarta Sans',sans-serif";

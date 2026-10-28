@@ -45,6 +45,19 @@ Jika tampilan lama masih muncul: Ctrl+Shift+R.
 2. Tambah satu ide, lalu cek sheet `Ide` di spreadsheet.
 3. Tekan F12 → tab Network: pastikan tidak ada error CORS.
 
+## H. Fitur Gemini AI (dua mode)
+Fitur: *Ide dengan AI*, *Perbaiki hook*, *Buat Naskah*, *Caption & Hashtag*, dan *Insight AI* (Analitik).
+
+**Mode manual (tanpa API key — langsung bisa dipakai).** Klik tombol AI → KontenKu menampilkan prompt → klik *Salin prompt & buka Gemini* → tempel di gemini.google.com (memakai langganan Gemini Pro Anda) → salin jawabannya → tempel di kotak KontenKu → *Gunakan Hasil*.
+
+**Mode otomatis (opsional).** Jika `GEMINI_API_KEY` diisi, hasil langsung muncul tanpa salin-tempel.
+1. Buat API key gratis di https://aistudio.google.com/apikey (tanpa billing = tetap jalur gratis dengan batas ketat). Langganan Gemini Pro tidak termasuk kuota API.
+2. Apps Script → **Project Settings** → **Script Properties** → *Add script property*: `GEMINI_API_KEY` = key Anda → Save. **Jangan** menaruh key di kode atau di GitHub.
+3. Opsional: `GEMINI_MODEL` (default `gemini-2.5-flash`) dan `AI_LIMIT` (default 20 permintaan per pengguna per 6 jam).
+4. Deploy → Manage deployments → Edit → **New version**.
+
+Jika key kosong, kuota habis, atau Gemini gagal, KontenKu otomatis beralih ke mode manual. Teks yang diproses AI dikirim ke Google Gemini.
+
 ## Troubleshooting
 | Gejala | Solusi |
 |---|---|

@@ -68,3 +68,4 @@ canvas{max-height:280px}
 @media print{.side,.top,.ac,.scrim,.ib,.btn{display:none!important}.mn{margin:0}body{background:#fff}.card,.kpi{box-shadow:none;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 #net{position:fixed;top:0;left:0;width:100%;height:3px;z-index:300;background:linear-gradient(90deg,var(--pr),#22D3EE,var(--pr));background-size:200% 100%;animation:sk 1s linear infinite}
+#mdl2{z-index:110}
