@@ -39,7 +39,7 @@ const kd=k=>k.tgl_tayang||k.deadline||k.tgl_mulai||String(k.dibuat_pada||'').sli
 const inter=a=>num(a.likes)+num(a.komentar)+num(a.shares)+num(a.saves);
 const ws=s=>{const d=new Date(s+'T00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);return iso(d)};
 function inP(k){const d=kd(k);if(!d||per==='semua')return true;const n=new Date();return d>=({minggu:ago(7),bulan:iso(new Date(n.getFullYear(),n.getMonth(),1)),'3bulan':ago(90)}[per])}
-function lat(A){const m={};(A||D.analitik).forEach(a=>{if(!m[a.konten_id]||a.tgl_catat>=m[a.konten_id].tgl_catat)m[a.konten_id]=a});return m}
+function lat(A){const m={};(A||D.analitik).forEach(a=>{const q=x=>x.tgl_catat+(x.dibuat_pada||'');if(!m[a.konten_id]||q(a)>=q(m[a.konten_id]))m[a.konten_id]=a});return m}
 const ch=(id,cfg)=>AF.push(()=>{const c=document.getElementById(id);if(c&&window.Chart)CH.push(new Chart(c,Object.assign({options:{}},cfg,{options:Object.assign({responsive:true,maintainAspectRatio:false},cfg.options)})))});
 
 /* ── data: cache lokal, sinkron server, tulis optimistik ── */
@@ -193,7 +193,7 @@ function fCatat(kid){
   const n=(x,l)=>fld(l,`<input type="number" min="0" step="any" name="${x}" value="0">`);
   mdl(`<h2>Catat Performa</h2><p>Angka performa diinput manual; engagement rate dihitung otomatis.</p><form onsubmit="return svA(event)" style="margin-top:14px"><button type="button" class="btn btn-s btn-sm" style="margin-bottom:14px" onclick="sinkronTT(this,[this.form.konten_id.value])"><i class="bi bi-arrow-repeat"></i> Ambil otomatis dari link TikTok</button>${fld('Konten',`<select name="konten_id">${K.map(k=>`<option value="${k.konten_id}"${k.konten_id===kid?' selected':''}>${esc(k.judul)}</option>`).join('')}</select>`)}${fld('Tanggal Catat',`<input type="date" name="tgl_catat" value="${td()}" required>`)}<div class="g2">${n('views','Views')}${n('likes','Likes')}${n('komentar','Komentar')}${n('shares','Shares')}${n('saves','Saves')}${n('klik','Klik affiliate')}${n('komisi','Komisi (Rp)')}</div><div class="ft"><button type="button" class="btn btn-s" onclick="tutup()">Batal</button><button class="btn btn-p">Simpan</button></div></form>`);
 }
-function svA(e){e.preventDefault();const o=FD(e.target);o.analitik_id=uid();sv([{t:'Analitik',o}]);tutup();toast('Performa dicatat');return false}
+function svA(e){e.preventDefault();const o=FD(e.target),ex=D.analitik.find(x=>x.konten_id===o.konten_id&&x.tgl_catat===o.tgl_catat);o.analitik_id=ex?ex.analitik_id:uid();if(!ex)o.dibuat_pada=new Date().toISOString();sv([{t:'Analitik',o}]);tutup();toast('Performa dicatat');return false}
 
 /* ── Pengaturan ── */
 R.pengaturan=()=>{
