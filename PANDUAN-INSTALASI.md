@@ -58,6 +58,38 @@ Fitur: *Ide dengan AI*, *Perbaiki hook*, *Buat Naskah*, *Caption & Hashtag*, dan
 
 Jika key kosong, kuota habis, atau Gemini gagal, KontenKu otomatis beralih ke mode manual. Teks yang diproses AI dikirim ke Google Gemini.
 
+## I. Statistik TikTok otomatis (TikTok Display API resmi)
+KontenKu membaca views, likes, komentar, dan shares video **milik akun yang Anda hubungkan**, memakai ID video dari kolom *Tautan Publikasi*. Saves/klik/komisi tidak tersedia dari API ini: isi manual (nilai terakhir dipertahankan).
+
+**A. Buat aplikasi TikTok**
+1. Buka https://developers.tiktok.com → login → **Manage apps** → buat app baru (isi nama, ikon, kategori, deskripsi).
+2. **Add products**: **Login Kit** dan **Display API**. Pastikan scope `user.info.basic` dan `video.list` aktif.
+3. Di Login Kit → **Web** → **Redirect URI**: isi **URL Web App Apps Script Anda** (berakhiran `/exec`) persis sama, tanpa `?` atau `#`. *(Jika TikTok menolak URL ini, kabari saya — ada jalur cadangan.)*
+4. Isi **Website URL**, **Privacy Policy URL**, **Terms of Service URL** dengan alamat situs Anda: `https://SITUS-ANDA/`, `https://SITUS-ANDA/privacy.html`, `https://SITUS-ANDA/terms.html`. Ganti `[GANTI: email kontak Anda]` di kedua halaman itu sebelum push.
+
+**B. Mode Sandbox (tanpa review, cukup untuk dipakai sendiri)**
+Di halaman app, ubah toggle ke **Sandbox** → buat sandbox → tambahkan produk yang sama → di *Target users* tambahkan akun TikTok Anda (maks. 10 akun). Hanya akun target yang bisa terhubung selama di Sandbox.
+
+**C. Pasang kunci di Apps Script** (Project Settings → Script Properties)
+| Nama | Isi |
+|---|---|
+| `TIKTOK_CLIENT_KEY` | Client key dari halaman app TikTok |
+| `TIKTOK_CLIENT_SECRET` | Client secret (jangan dibagikan, jangan di GitHub) |
+| `TIKTOK_REDIRECT_URI` | URL Web App `/exec`, sama persis dengan langkah A3 |
+| `FRONTEND_URL` | Alamat situs KontenKu (untuk tombol "Kembali ke KontenKu") |
+Lalu **Deploy → Manage deployments → Edit → New version**, dan push frontend baru.
+
+**D. Pemakaian**
+1. KontenKu → **Pengaturan → Hubungkan TikTok** → login TikTok → setujui izin → klik *Kembali ke KontenKu*.
+2. Isi **Tautan Publikasi** di detail konten → **Analitik → Sinkron dari TikTok**. Konten yang berhasil otomatis berstatus *Sudah Tayang*.
+3. Opsional harian: jalankan `aktifkanSinkronHarian()` sekali dari editor (konten tayang 30 hari terakhir diperbarui tiap pagi).
+Batas: satu konten disinkron maksimal tiap 15 menit.
+
+**E. Dipakai pengguna lain (produksi)**
+TikTok mewajibkan **App Review** (deskripsi, demo video tiap produk/scope, URL privasi & syarat). Menurut sumber komunitas, prosesnya beberapa hari sampai sekitar dua minggu. Setelah disetujui, pengguna mana pun bisa menghubungkan akunnya sendiri.
+
+Keamanan: token TikTok tersimpan di sheet `TikTokToken` pada spreadsheet database (jangan dibagikan ke orang lain). Pengguna bisa memutus koneksi di Pengaturan (token dicabut dan dihapus).
+
 ## Troubleshooting
 | Gejala | Solusi |
 |---|---|
