@@ -64,7 +64,7 @@ KontenKu membaca views, likes, komentar, dan shares video **milik akun yang Anda
 **A. Buat aplikasi TikTok**
 1. Buka https://developers.tiktok.com → login → **Manage apps** → buat app baru (isi nama, ikon, kategori, deskripsi).
 2. **Add products**: **Login Kit** dan **Display API**. Pastikan scope `user.info.basic` dan `video.list` aktif.
-3. Di Login Kit → **Web** → **Redirect URI**: isi **URL Web App Apps Script Anda** (berakhiran `/exec`) persis sama, tanpa `?` atau `#`. *(Jika TikTok menolak URL ini, kabari saya — ada jalur cadangan.)*
+3. Di Login Kit → **Web** → **Redirect URI** (Sandbox *dan* Production, terpisah): isi `https://SITUS-ANDA/tiktok-callback.html` (halaman ini ada di ZIP frontend), persis sama dengan nilai `TIKTOK_REDIRECT_URI` di langkah C. Klik **Add a URI** lalu **Apply changes**.
 4. Isi **Website URL**, **Privacy Policy URL**, **Terms of Service URL** dengan alamat situs Anda: `https://SITUS-ANDA/`, `https://SITUS-ANDA/privacy.html`, `https://SITUS-ANDA/terms.html`. Ganti `[GANTI: email kontak Anda]` di kedua halaman itu sebelum push.
 
 **B. Mode Sandbox (tanpa review, cukup untuk dipakai sendiri)**
@@ -75,8 +75,8 @@ Di halaman app, ubah toggle ke **Sandbox** → buat sandbox → tambahkan produk
 |---|---|
 | `TIKTOK_CLIENT_KEY` | Client key dari halaman app TikTok |
 | `TIKTOK_CLIENT_SECRET` | Client secret (jangan dibagikan, jangan di GitHub) |
-| `TIKTOK_REDIRECT_URI` | URL Web App `/exec`, sama persis dengan langkah A3 |
-| `FRONTEND_URL` | Alamat situs KontenKu (untuk tombol "Kembali ke KontenKu") |
+| `TIKTOK_REDIRECT_URI` | `https://SITUS-ANDA/tiktok-callback.html`, sama persis dengan langkah A3 |
+| `FRONTEND_URL` | (opsional, hanya untuk jalur lama) alamat situs KontenKu |
 Lalu **Deploy → Manage deployments → Edit → New version**, dan push frontend baru.
 
 **D. Pemakaian**

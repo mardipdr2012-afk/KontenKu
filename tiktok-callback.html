@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Menghubungkan TikTok — KontenKu</title><link rel="stylesheet" href="css/style.css"></head>
+<body><main style="max-width:480px;margin-top:10vh"><div class="card" style="text-align:center"><h2>KontenKu × TikTok</h2><p id="s">Menghubungkan akun TikTok…</p><p><a id="b" href="index.html" hidden style="color:var(--pr);font-weight:600">← Kembali ke KontenKu</a></p></div></main>
+<script src="js/config.js"></script>
+<script>
+(async()=>{
+  const q=new URLSearchParams(location.search),s=document.getElementById('s'),b=document.getElementById('b'),code=q.get('code'),state=q.get('state'),err=q.get('error');
+  history.replaceState(null,'',location.pathname); /* sembunyikan kode dari address bar */
+  try{
+    if(err||!code)throw 'Otorisasi dibatalkan.';
+    const r=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:'tiktokCallback',args:[code,state]})}).then(x=>x.json());
+    if(!r.ok)throw r.pesan||'Gagal menghubungkan.';
+    s.textContent='✅ Akun TikTok berhasil dihubungkan.';
+  }catch(e){s.textContent='⚠️ '+(typeof e==='string'?e:'Tidak dapat terhubung ke server.')}
+  b.hidden=false;
+})();
+</script></body></html>
